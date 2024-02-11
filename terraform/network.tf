@@ -3,7 +3,8 @@
 resource "aws_vpc" "tf_vpc" {
   cidr_block = "10.61.0.0/16"
   tags = {
-    Name = "tf-vpc"
+    Name    = "tf-vpc"
+    Purpose = "IAC-demo"
   }
 }
 
@@ -12,14 +13,16 @@ resource "aws_subnet" "tf_subnet1" {
   cidr_block        = "10.61.1.0/24"
   availability_zone = "eu-west-3a"
   tags = {
-    Name = "tf_subnet1"
+    Name    = "tf_subnet1"
+    Purpose = "IAC-demo"
   }
 }
 
 resource "aws_route_table" "tf_rtb" {
   vpc_id = aws_vpc.tf_vpc.id
   tags = {
-    Name = "tf-rtb"
+    Name    = "tf-rtb"
+    Purpose = "IAC-demo"
   }
 }
 
@@ -37,7 +40,8 @@ resource "aws_route" "tf_default_gateway" {
 resource "aws_internet_gateway" "tf_igw" {
   vpc_id = aws_vpc.tf_vpc.id
   tags = {
-    Name = "tf-igw"
+    Name    = "tf-igw"
+    Purpose = "IAC-demo"
   }
 }
 
