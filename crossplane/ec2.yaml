@@ -101,11 +101,7 @@ spec:
     keyName: cp-keypair
     vpcSecurityGroupIdRefs:
       - name: cp-sg1
-    userData: |
-      #!/bin/bash
-      sudo yum install -y docker
-      sudo systemctl enable docker --now
-      sudo docker run -d --name godutch -p 80:8080 -e LOVE=mills pa3hcm/godutch:0.1
+    userDataBase64: IyEgL2Jpbi9iYXNoCnN1ZG8geXVtIGluc3RhbGwgLXkgZG9ja2VyCnN1ZG8gc3lzdGVtY3RsIGVuYWJsZSBkb2NrZXIgLS1ub3cKc3VkbyBkb2NrZXIgcnVuIC1kIC0tbmFtZSBnb2R1dGNoIC1wIDgwOjgwODAgLWUgTE9WRT1taWxscyBwYTNoY20vZ29kdXRjaDowLjEK
     tags:
       Name: cp-instance1
       Author: Ernest
