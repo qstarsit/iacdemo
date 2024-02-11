@@ -1,9 +1,5 @@
 # Basic terraform configuration
 
-provider "aws" {
-  region = "eu-west-3"
-}
-
 terraform {
   required_providers {
     aws = {
@@ -13,3 +9,6 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = "eu-west-3"
+}
