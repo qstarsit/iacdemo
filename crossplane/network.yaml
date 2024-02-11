@@ -1,0 +1,102 @@
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPC
+metadata:
+  name: cp-vpc
+  labels:
+    vpc_name: cp-vpc
+spec:
+  forProvider:
+    cidrBlock: 10.62.0.0/16
+    region: eu-west-3
+    tags:
+      Name: cp-vpc
+      Author: Ernest
+      Purpose: IAC-demo
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  name: cp-subnet1
+  labels:
+    subnet_name: cp-subnet1
+spec:
+  forProvider:
+    availabilityZone: eu-west-3a
+    cidrBlock: 10.62.1.0/24
+    region: eu-west-3
+    vpcIdSelector:
+      matchLabels:
+        vpc_name: cp-vpc
+    tags:
+      Name: cp-subnet1
+      Author: Ernest
+      Purpose: IAC-demo
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: InternetGateway
+metadata:
+  name: cp-igw
+spec:
+  forProvider:
+    region: eu-west-3
+    vpcIdRef:
+      name: cp-vpc
+    tags: 
+      Name: cp-rtb
+      Author: Ernest
+      Purpose: IAC-demo
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: RouteTable
+metadata:
+  name: cp-rtb
+  labels:
+    routetable_name: cp-rtb
+spec:
+  forProvider:
+    region: eu-west-3
+    vpcIdSelector:
+      matchLabels:
+        vpc_name: cp-vpc
+    tags: 
+      Name: cp-rtb
+      Author: Ernest
+      Purpose: IAC-demo
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: MainRouteTableAssociation
+metadata:
+  name: cp-rtb-assoc
+spec:
+  forProvider:
+    region: eu-west-3
+    routeTableIdSelector:
+      matchLabels:
+        routetable_name: cp-rtb
+    vpcIdSelector:
+      matchLabels:
+        vpc_name: cp-vpc
+
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Route
+metadata:
+  name: cp-default-gateway
+spec:
+  forProvider:
+    destinationCidrBlock: 0.0.0.0/0
+    gatewayIdRef:
+      name: cp-igw
+    region: eu-west-3
+    routeTableIdRef:
+      name: cp-rtb
