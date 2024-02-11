@@ -9,8 +9,10 @@ helm install crossplane crossplane-stable/crossplane --namespace crossplane-syst
 kubectl get pods -n crossplane
 kubectl api-resources | grep crossplane
 
-# AWS configuration
+# Install AWS providers
 kubectl apply -f aws-provider-s3.yaml
+kubectl apply -f aws-provider-ec2.yaml
+kubectl apply -f aws-provider-route53.yaml
 
 # Create aws-secret before you continue, see:
 # https://docs.crossplane.io/latest/getting-started/provider-aws/#create-a-kubernetes-secret-for-aws

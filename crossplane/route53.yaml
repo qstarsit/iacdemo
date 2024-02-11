@@ -1,0 +1,13 @@
+apiVersion: route53.aws.upbound.io/v1beta1
+kind: Record
+metadata:
+  name: cpdemo-a-record
+spec:
+  forProvider:
+    name: 13.38.223.7
+    records:
+      - cpdemo.awscloudqstars.nl
+    region: eu-west-3
+    ttl: 60
+    type: A
+    zoneId: Z05656452IRLWUW60U3G4

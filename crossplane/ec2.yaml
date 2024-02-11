@@ -1,0 +1,148 @@
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: KeyPair
+metadata:
+  name: cp-keypair
+spec:
+  forProvider:
+    publicKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILY6cK4QGpzlznJin6GeVAvrJ8M7M6szmmJKbunV/ILN
+    region: eu-west-3
+    tags: 
+      Name: cp-keypair
+      Author: Ernest
+      Purpose: IAC-demo
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroup
+metadata:
+  name: cp-sg1
+  labels:
+    sg_name: cp-sg1
+spec:
+  forProvider:
+    description: Allow inbound ssh and http traffic
+    name: cp-sg1
+    region: eu-west-3
+    vpcIdSelector:
+      matchLabels:
+        vpc_name: cp-vpc
+    tags:
+      Name: cp-sg1
+      Author: Ernest
+      Purpose: IAC-demo
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroupIngressRule
+metadata:
+  name: cp-sg1-in-ssh
+spec:
+  forProvider:
+    cidrIpv4: 0.0.0.0/0
+    fromPort: 22
+    toPort: 22
+    ipProtocol: tcp
+    region: eu-west-3
+    securityGroupIdSelector:
+      matchLabels:
+        sg_name: cp-sg1
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroupIngressRule
+metadata:
+  name: cp-sg1-in-http
+spec:
+  forProvider:
+    cidrIpv4: 0.0.0.0/0
+    fromPort: 80
+    toPort: 80
+    ipProtocol: tcp
+    region: eu-west-3
+    securityGroupIdSelector:
+      matchLabels:
+        sg_name: cp-sg1
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: SecurityGroupEgressRule
+metadata:
+  name: cp-sg1-out-all
+spec:
+  forProvider:
+    cidrIpv4: 0.0.0.0/0
+    fromPort: 0
+    toPort: 0
+    ipProtocol: "-1"
+    region: eu-west-3
+    securityGroupIdSelector:
+      matchLabels:
+        sg_name: cp-sg1
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Instance
+metadata:
+  name: cp-instance1
+  labels:
+    instance_name: cp-instance1
+spec:
+  forProvider:
+    ami: ami-089c89a80285075f7
+    instanceType: t2.micro
+    region: eu-west-3
+    subnetIdRef:
+      name: cp-subnet1
+    keyName: cp-keypair
+    vpcSecurityGroupIdRefs:
+      - name: cp-sg1
+    userData: |
+      #!/bin/bash
+      sudo yum install -y docker
+      sudo systemctl enable docker --now
+      sudo docker run -d --name godutch -p 80:8080 -e LOVE=mills pa3hcm/godutch:0.1
+    tags:
+      Name: cp-instance1
+      Author: Ernest
+      Purpose: IAC-demo
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: EIP
+metadata:
+  name: cp-eip1
+  labels:
+    eip_name: cp-eip1
+spec:
+  forProvider:
+    instanceRef:
+      name: cp-instance1
+    region: eu-west-3
+    domain: vpc
+    tags:
+      Name: cp-eip1
+      Author: Ernest
+      Purpose: IAC-demo
+
+---
+
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: EIPAssociation
+metadata:
+  name: cp-eip-assoc1
+spec:
+  forProvider:
+    allocationIdSelector:
+      matchLabels:
+        eip_name: cp-eip1
+    instanceIdSelector:
+      matchLabels:
+        instance_name: cp-instance1
+    region: eu-west-3
+
