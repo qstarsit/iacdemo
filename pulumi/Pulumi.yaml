@@ -1,0 +1,10 @@
+name: godutch
+runtime:
+  name: python
+  options:
+    virtualenv: ../.venv
+description: Pulumi demo with Docker container on AWS EC2
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: ""
