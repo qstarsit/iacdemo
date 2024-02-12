@@ -114,3 +114,5 @@ pu_eip1 = aws.ec2.Eip("pu-eip1",
         "Purpose": "IAC-demo"
     }
 )
+
+pulumi.export("public_ip", pu_eip1.public_ip)
