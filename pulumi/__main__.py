@@ -1,9 +1,9 @@
 """An AWS Python Pulumi program"""
 
 from os import environ
-import pulumi
 import pulumi_awsx as awsx
 import pulumi_aws as aws
+import pulumi
 
 pu_vpc = awsx.ec2.Vpc("pu-vpc",
     cidr_block="10.63.0.0/16",
@@ -71,7 +71,7 @@ pu_instance1_nic = aws.ec2.NetworkInterface("pu-instance1-nic",
     security_groups=[pu_sg1.id]
 )
 
-file = open(environ.get('HOME') + "/.ssh/id_ed25519.pub", "r")
+file = open(environ.get('HOME') + "/.ssh/id_ed25519.pub", "r", encoding="utf-8")
 public_key = file.read()
 file.close()
 
